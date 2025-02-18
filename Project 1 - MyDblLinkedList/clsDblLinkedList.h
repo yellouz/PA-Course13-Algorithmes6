@@ -4,8 +4,10 @@ using namespace std;
 template <class T>
 class clsDblLinkedList
 {
-public:
+protected:
+    int _Size = 0;
 
+public:
     class Node
     {
     public:
@@ -35,6 +37,7 @@ public:
             head->prev = newNode;
         }
         head = newNode;
+        _Size++;
     }
 
     // Print the linked list
@@ -80,6 +83,7 @@ public:
             current->next->prev = newNode;
         }
         current->next = newNode;
+        _Size++;
     }
     
     void InsertAtEnd(T value) {
@@ -106,7 +110,7 @@ public:
             current->next = newNode;
             newNode->prev = current;
         }
-    
+        _Size++;
     }
 
     void DeleteNode(Node* &NodeToDelete) {
@@ -134,6 +138,7 @@ public:
         }
 
         delete NodeToDelete;
+        _Size--;
     }
 
     void DeleteFirstNode()
@@ -155,7 +160,7 @@ public:
             head->prev = NULL;
         }
         delete temp;
-
+        _Size--;
     }
 
     void DeleteLastNode() {
@@ -186,7 +191,111 @@ public:
         Node* temp = current->next;
         current->next = NULL;
         delete temp;
-       
+        _Size--;
+    }
+
+    int size()
+    {
+       return _Size;
+    }
+
+    bool isEmpty()
+    {
+        return _Size == 0;
+    }
+
+    void Clear()
+    {
+        while (head != NULL)
+        {
+            DeleteFirstNode();
+        }    
+    }
+
+    void Reverse()
+    {
+        Node* current = head;
+        Node* temp = nullptr;
+        while (current != nullptr) {
+            temp = current->prev;
+            current->prev = current->next;
+            current->next = temp;
+            current = current->prev;
+        }
+
+        if (temp != nullptr) {
+            head = temp->prev;
+        }
+    }
+    
+    Node* GetNode(int Position)
+    {
+        //position starts from 0
+        if (Position > _Size - 1 || Position < 0)
+        {
+            return NULL;
+        }
+        
+        Node* Current = head;
+        int Counter = 0;
+        while (Current != NULL)
+        {
+            if (Counter == Position)
+            {
+                break;
+            }
+
+            Current = Current->next;
+            Counter++;
+        }
+
+        return Current;
+    }
+
+    T GetItem(int Position)
+    {
+        Node* ItemNode = GetNode(Position);
+
+        if (ItemNode == NULL)
+        {
+            return NULL;
+        }
+        else
+        {
+            return ItemNode->value;
+        }
+    }
+
+    bool UpdateItem(int Position, T NewValue)
+    {
+        Node* ItemNode = GetNode(Position);
+
+        if (ItemNode != NULL)
+        {
+            ItemNode->value = NewValue;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        
+    }
+
+    bool InsertAfter(int Position, T Value)
+    {
+        Node* ItemNode = GetNode(Position);
+
+        if (ItemNode != NULL)
+        {
+            InsertAfter(ItemNode, Value);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        
     }
 
 };
